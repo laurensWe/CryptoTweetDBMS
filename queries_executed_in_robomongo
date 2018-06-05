@@ -1,0 +1,29 @@
+
+######Average closing price of all cryptocurrencies######
+db.getCollection('coins').aggregate([{'$group':{'_id':'$Coin Name','average':{'$avg':'$Close Price'}}}])
+
+
+####Average closing price of all cryprocurrencies of the first 15 days of every month#######
+db.getCollection('coins').aggregate([
+    { '$match':{'Day of Month':{'$gt':0,'$lt':15}}}, 
+    {'$group':{'_id':'$Coin Name','average':{'$avg':'$Close Price'}}},
+    { '$sort' : { 'average' : -1}}
+])
+
+####Average closing price of all cryprocurrencies of the second 15 days of every month#######
+db.getCollection('coins').aggregate([
+    { '$match':{'Day of Month':{'$gt':14,'$lt':40}}}, 
+    {'$group':{'_id':'$Coin Name','average':{'$avg':'$Close Price'}}},
+    { '$sort' : { 'average' : -1}}
+])
+
+
+#### Average difference between closing and opening price of all cryprocurrencies (sorted) ########
+db.getCollection('coins').aggregate([
+    {'$group':{'_id':'$Coin Name','average':{'$avg':{'$subtract':['$Open Price','$Close Price']}}}},
+    { '$sort' : { 'average' : -1}}
+])
+
+
+## Take that cryprocurrencies that have Daily % Change USD more than 4% #####
+db.getCollection('coins').find({'Daily % Change USD':{'$gt':4}})
